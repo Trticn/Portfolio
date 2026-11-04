@@ -1,0 +1,30 @@
+---
+interface Props {
+  items: readonly string[];
+  label: string;
+  compact?: boolean;
+}
+
+const { items, label, compact = false } = Astro.props;
+const loop = [...items, ...items];
+---
+
+<div class="marquee overflow-hidden">
+  <p class="sr-only">{label}</p>
+  <div class:list={["marquee-track flex items-center", compact ? "gap-8 py-2" : "gap-10 py-3"]} aria-hidden="true">
+    {
+      loop.map((item, index) => (
+        <span
+          class:list={[
+            "flex shrink-0 items-center uppercase text-muted",
+            compact ? "gap-8 text-base tracking-[0.16em]" : "gap-10 text-[0.7rem] tracking-[0.28em]",
+            index >= items.length && "marquee-clone",
+          ]}
+        >
+          <span class:list={["size-1.5 rounded-full", index % 2 === 0 ? "bg-accent" : "bg-warm"]} />
+          {item}
+        </span>
+      ))
+    }
+  </div>
+</div>

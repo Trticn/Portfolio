@@ -1,0 +1,62 @@
+---
+import {
+  siAstro,
+  siMongodb,
+  siNextdotjs,
+  siNodedotjs,
+  siPostgresql,
+  siReact,
+  siSupabase,
+  siTypescript,
+} from "simple-icons";
+import { phrases, tools } from "../data/skills";
+import Marquee from "./Marquee.astro";
+
+const icons = {
+  typescript: siTypescript,
+  react: siReact,
+  nextdotjs: siNextdotjs,
+  astro: siAstro,
+  nodedotjs: siNodedotjs,
+  postgresql: siPostgresql,
+  mongodb: siMongodb,
+  supabase: siSupabase,
+} as const;
+
+const fillFor = (hex: string) => (hex === "000000" ? "#ffffff" : `#${hex}`);
+---
+
+<section id="skills" class="band overflow-hidden">
+  <div class="mx-auto w-full max-w-3xl px-6">
+    <Marquee items={phrases} label={phrases.join(". ")} compact />
+  </div>
+  <div class="relative mx-auto mt-12 aspect-square w-[min(100%-1rem,56rem)] md:mt-16">
+    <div class="orbit absolute inset-0">
+      {
+        tools.map((tool, index) => {
+          const icon = icons[tool.slug];
+          return (
+            <div class="orbit-slot absolute" style={`--i:${index}`}>
+              <div class="orbit-face grid size-16 place-items-center rounded-full bg-[#14181c] ring-1 ring-accent/30 md:size-24">
+                <svg viewBox="0 0 24 24" class="size-8 md:size-12" aria-hidden="true">
+                  <path fill={fillFor(icon.hex)} d={icon.path} />
+                </svg>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+    <h2 class="pointer-events-none absolute inset-0 z-10 grid place-items-center">
+      <svg viewBox="0 0 240 78" class="w-[46%] overflow-visible md:w-[40%]" role="img" aria-label="My Tech Stack">
+        <path id="tech-arc" fill="none" d="M 14 52 Q 120 30 226 52" />
+        <text fill="#d2d2d8" font-size="24" letter-spacing="2.2" class="font-display">
+          <textPath href="#tech-arc" startOffset="50%" text-anchor="middle">MY TECH STACK</textPath>
+        </text>
+      </svg>
+    </h2>
+  </div>
+  <ul class="sr-only">
+    {tools.map((tool) => <li>{tool.name}</li>)}
+  </ul>
+</section>

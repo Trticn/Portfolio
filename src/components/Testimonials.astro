@@ -1,0 +1,100 @@
+---
+import { testimonials } from "../data/testimonials";
+---
+
+<section id="feedback" class="band px-6 md:px-12" aria-roledescription="carousel" aria-label="Testimonials">
+  <div class="mx-auto max-w-3xl text-center">
+    <div class="grid">
+    {
+      testimonials.map((item, index) => (
+        <figure data-quote class:list={["quote-slide grid justify-items-center", index === 0 && "is-on", index > 0 && "is-right"]}>
+          {
+            item.photo && (
+              <img
+                src={item.photo}
+                alt=""
+                width="96"
+                height="96"
+                class="size-24 rounded-full object-cover"
+              />
+            )
+          }
+          {
+            item.quote && (
+              <blockquote class="mt-8 text-xl leading-[1.6] text-pretty text-white md:text-2xl">
+                <p>{item.quote}</p>
+              </blockquote>
+            )
+          }
+          <figcaption class="mt-8">
+            <p class="text-base text-white">{item.name}</p>
+            {item.role && <p class="mt-2 text-sm text-muted">{item.role}</p>}
+            {
+              item.rating && (
+                <p class="mt-4 text-xs uppercase tracking-[3px] text-accent">
+                  {item.rating} · {item.label}
+                </p>
+              )
+            }
+          </figcaption>
+        </figure>
+      ))
+    }
+    </div>
+
+    <div class="mt-10 grid grid-cols-[1fr_auto_1fr] items-center">
+      <button type="button" data-quote-prev class="link-underline justify-self-end text-sm uppercase tracking-[2px] text-muted" aria-label="Previous testimonial">
+        Previous
+      </button>
+      <div class="flex items-center justify-center gap-2 px-4 md:gap-2.5 md:px-5">
+        {
+          testimonials.map((_, index) => (
+            <button
+              type="button"
+              data-quote-dot
+              class:list={["size-2.5 rounded-full md:size-3", index === 0 ? "bg-accent" : "bg-white/30"]}
+              aria-label={`Show quote ${index + 1} of ${testimonials.length}`}
+              aria-current={index === 0 ? "true" : undefined}
+            />
+          ))
+        }
+      </div>
+      <button type="button" data-quote-next class="link-underline justify-self-start text-sm uppercase tracking-[2px] text-muted" aria-label="Next testimonial">
+        Next
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slides = [...document.querySelectorAll<HTMLElement>("[data-quote]")];
+  const dots = [...document.querySelectorAll<HTMLButtonElement>("[data-quote-dot]")];
+  let current = 0;
+
+  const show = (index: number) => {
+    const next = (index + slides.length) % slides.length;
+    const step = (next - current + slides.length) % slides.length;
+    const forward = step <= slides.length / 2;
+    slides.forEach((slide, i) => {
+      slide.classList.remove("is-on", "is-left", "is-right");
+      const on = i === next;
+      if (on) slide.classList.add("is-on");
+      else if (i === current) slide.classList.add(forward ? "is-left" : "is-right");
+      else slide.classList.add(forward ? "is-right" : "is-left");
+      slide.toggleAttribute("aria-hidden", !on);
+    });
+    current = next;
+    dots.forEach((dot, i) => {
+      const on = i === current;
+      dot.classList.toggle("bg-accent", on);
+      dot.classList.toggle("bg-white/30", !on);
+      if (on) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  };
+
+  document.querySelector("[data-quote-prev]")?.addEventListener("click", () => show(current - 1));
+  document.querySelector("[data-quote-next]")?.addEventListener("click", () => show(current + 1));
+  dots.forEach((dot, index) => dot.addEventListener("click", () => show(index)));
+  if (slides.length) show(0);
+</script>

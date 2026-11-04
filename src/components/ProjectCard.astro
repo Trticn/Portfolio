@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  cover: string;
+  url?: string;
+  tone?: number;
+}
+
+const { title, summary, cover, url, tone = 0 } = Astro.props;
+const Tag = url ? "a" : "article";
+
+const backdrops = [
+  "bg-[radial-gradient(ellipse_at_28%_18%,#1a4e50_0%,#12181c_48%,#0c0e12_100%)]",
+  "bg-[radial-gradient(ellipse_at_72%_20%,#6a3450_0%,#161216_52%,#0c0e12_100%)]",
+  "bg-[radial-gradient(ellipse_at_50%_84%,#145458_0%,#12161c_54%,#0c0e12_100%)]",
+  "bg-[radial-gradient(ellipse_at_24%_78%,#4a2840_0%,#141218_52%,#0c0e12_100%)]",
+];
+
+const rings = [
+  "motion-safe:group-hover:ring-accent/50",
+  "motion-safe:group-hover:ring-warm/50",
+  "motion-safe:group-hover:ring-accent/50",
+  "motion-safe:group-hover:ring-warm/50",
+];
+---
+
+<Tag
+  class="group block"
+  {...(url ? { href: url, target: "_blank", rel: "noopener noreferrer" } : {})}
+>
+  <div class:list={["relative aspect-[20/21] overflow-hidden rounded-xl ring-1 ring-white/10 transition duration-500", rings[tone % rings.length], backdrops[tone % backdrops.length]]}>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgb(8_9_12/0.45)_100%)]"></div>
+    {
+      cover && (
+        <img
+          src={cover}
+          alt={`${title} cover`}
+          loading="lazy"
+          decoding="async"
+          class="relative h-full w-full object-contain p-8 motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
+          onerror="this.style.display='none'"
+        />
+      )
+    }
+  </div>
+  <h3 class="mt-4 font-display text-[2rem] leading-[1.2] text-balance md:text-[2.5rem]">{title}</h3>
+  <p class="mt-2 text-base leading-[1.6] text-pretty text-muted">{summary}</p>
+</Tag>

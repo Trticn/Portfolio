@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { site } from "../data/site";
+import Button from "./Button.astro";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section id="projects" class="band px-6 md:px-12">
+  <div class="mx-auto max-w-[1280px]">
+    <h2 class="display-title mb-6 font-display text-[clamp(3.15rem,14vw,4rem)] leading-[0.95] text-balance uppercase md:mb-8 md:text-[clamp(6.5rem,14vw,12.5rem)] md:leading-[1.2]">
+      Projects
+    </h2>
+    <div class="grid lg:grid-cols-2 lg:gap-4">
+      <div class="rise lg:col-start-2">
+        <p class="flex items-center gap-2 text-xs uppercase tracking-[3px] text-muted">
+          <span class="size-2 rounded-full bg-warm" aria-hidden="true"></span>
+          What I have worked on
+        </p>
+        <p class="mt-4 max-w-xl text-base leading-[1.6] text-pretty text-white">
+          {site.projectsIntro}
+        </p>
+        <Button href="#contact" class="mt-10 md:mt-12">Let's work together</Button>
+      </div>
+    </div>
+
+    <ul class="mt-16 grid list-none gap-x-12 gap-y-16 md:grid-cols-2 md:gap-y-60">
+      {
+        projects.map((project, index) => (
+          <li class:list={["min-w-0", index % 2 === 1 && "md:translate-y-[120px]"]}>
+            <ProjectCard
+              title={project.data.title}
+              summary={project.data.summary}
+              cover={project.data.cover}
+              url={project.data.url}
+              tone={index}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

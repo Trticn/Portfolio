@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Projects from "../components/Projects.astro";
+import Skills from "../components/Skills.astro";
+import Testimonials from "../components/Testimonials.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import Walker from "../components/Walker.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout>
+  <Nav />
+  <main>
+    <Hero />
+    <About />
+    <Projects projects={projects} />
+    <Skills />
+    <Testimonials />
+    <Contact />
+  </main>
+  <Footer />
+  <Walker />
+</BaseLayout>

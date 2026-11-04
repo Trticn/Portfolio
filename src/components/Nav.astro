@@ -1,0 +1,75 @@
+---
+import { site } from "../data/site";
+---
+
+<header class="fixed inset-x-0 top-2 z-50 px-2 lg:flex lg:justify-center lg:px-3">
+  <div class="lg:hidden">
+    <nav
+      class="nav-glass flex h-16 items-center justify-between rounded-xl px-5"
+      aria-label="Primary"
+    >
+      <a href="#home" class="font-display text-2xl leading-none tracking-wide" aria-label={`${site.name}, home`}>
+        {site.mark}
+      </a>
+      <button
+        type="button"
+        class="nav-toggle grid size-11 place-items-center text-white"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <span class="relative block h-[18px] w-7" aria-hidden="true">
+          <span class="nav-line nav-line-a absolute inset-x-0 top-0 block h-0.5 rounded-full bg-white"></span>
+          <span class="nav-line nav-line-b absolute inset-x-0 bottom-0 block h-0.5 rounded-full bg-white"></span>
+        </span>
+      </button>
+    </nav>
+    <div id="mobile-nav" data-menu-panel hidden class="nav-glass mt-2 rounded-xl px-6 py-8">
+      <ul class="flex flex-col items-center gap-6">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                data-nav
+                class="nav-link link-underline text-base uppercase tracking-[2px] text-muted"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <nav
+    class="nav-glass hidden h-14 items-center gap-3 rounded-xl p-1 lg:flex"
+    aria-label="Primary"
+  >
+    <a
+      href="#home"
+      class="flex h-full items-center rounded-lg px-4 font-display text-2xl leading-none tracking-wide"
+      aria-label={`${site.name}, home`}
+    >
+      {site.mark}
+    </a>
+    <span class="h-4 w-0.5 bg-[#606066]" aria-hidden="true"></span>
+    <ul class="flex h-full items-center px-2">
+      {
+        site.nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              data-nav
+              class="nav-link link-underline px-3 py-1 text-base uppercase tracking-[2px] text-muted"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

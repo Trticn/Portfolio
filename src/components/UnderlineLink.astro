@@ -1,0 +1,47 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  external?: boolean;
+  class?: string;
+  variant?: "text" | "button";
+}
+
+const { href, label, external = false, class: className = "", variant = "text" } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    variant === "button"
+      ? "group inline-flex items-center gap-4 border-b-2 border-accent py-4 text-base text-white"
+      : "group inline-flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-white",
+    className,
+  ]}
+  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+>
+  {
+    variant === "button" ? (
+      <span>{label}</span>
+    ) : (
+      <span class="relative">
+        {label}
+        <span class="absolute -bottom-2 left-0 h-px w-full origin-left bg-accent motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-x-110" />
+      </span>
+    )
+  }
+  <svg
+    viewBox="0 0 16 16"
+    class:list={[
+      "motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5",
+      variant === "button" ? "size-6" : "size-4",
+    ]}
+    aria-hidden="true"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+  >
+    <path d="M4 12 L12 4"></path>
+    <path d="M6 4 H12 V10"></path>
+  </svg>
+</a>

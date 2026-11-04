@@ -1,0 +1,135 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+const person: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: `${site.url}/`,
+  jobTitle: site.role,
+};
+
+if (site.email) person.email = site.email;
+if (site.phoneHref) person.telephone = site.phoneHref.replace(/^tel:/, "");
+
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  url: `${site.url}/`,
+  name: site.name,
+  publisher: {
+    "@type": "Person",
+    name: site.name,
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{site.title}</title>
+    <meta name="description" content={site.description} />
+    <meta name="author" content={site.name} />
+    <link rel="canonical" href={`${site.url}/`} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#08090C" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:title" content={site.title} />
+    <meta property="og:description" content={site.ogDescription} />
+    <meta property="og:url" content={`${site.url}/`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={site.title} />
+    <meta name="twitter:description" content={site.ogDescription} />
+    <script is:inline>
+      document.documentElement.classList.add("reveal");
+    </script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(website)} />
+  </head>
+  <body class="bg-ink font-sans text-white antialiased">
+    <a
+      href="#home"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-ink"
+    >
+      Skip to content
+    </a>
+    <slot />
+    <script>
+      import "../scripts/venom-button";
+    </script>
+    <script>
+      const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+      const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
+
+      const setMenu = (open: boolean) => {
+        if (!toggle || !panel) return;
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        panel.hidden = !open;
+      };
+
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          setMenu(toggle.getAttribute("aria-expanded") !== "true");
+        });
+      }
+
+      panel?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setMenu(false));
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setMenu(false);
+      });
+
+      const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-nav]")];
+      const sectionIds = [...new Set(links.map((link) => link.getAttribute("href") ?? ""))];
+      const sections = sectionIds
+        .map((href) => document.querySelector<HTMLElement>(href))
+        .filter((section): section is HTMLElement => section !== null);
+
+      const setActive = (id: string) => {
+        for (const link of links) {
+          const on = link.getAttribute("href") === `#${id}`;
+          link.classList.toggle("is-active", on);
+          if (on) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        }
+      };
+
+      const onScroll = () => {
+        const marker = window.scrollY + 140;
+        let current = sections[0]?.id;
+        for (const section of sections) {
+          if (section.offsetTop <= marker) current = section.id;
+        }
+        if (current) setActive(current);
+      };
+
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("hashchange", onScroll);
+
+      const rises = document.querySelectorAll(".rise");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            entry.target.classList.add("is-in");
+            observer.unobserve(entry.target);
+          }
+        },
+        { threshold: 0.18 },
+      );
+      rises.forEach((node) => observer.observe(node));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "pixelbysurlan",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@fontsource/anton": "^5.2.6",
+    "@fontsource/azeret-mono": "^5.2.6",
+    "@tailwindcss/vite": "^4.1.16",
+    "astro": "^5.15.0",
+    "simple-icons": "^16.36.0",
+    "tailwindcss": "^4.1.16"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.3"
+  }
+}

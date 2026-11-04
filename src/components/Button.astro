@@ -1,0 +1,38 @@
+---
+interface Props {
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
+const { href, type = "button", class: className = "" } = Astro.props;
+const Tag = href ? "a" : "button";
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  data-venom
+  class:list={[
+    "group inline-flex items-center gap-2.5 rounded-full bg-accent py-2.5 pr-2.5 pl-6 text-sm font-medium text-white transition-colors duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] hover:bg-accent/90 md:text-base",
+    className,
+  ]}
+>
+  <slot />
+  <span class="venom-face">
+    <span class="venom-ball flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full" data-venom-ball>
+      <span class="venom-iris" data-venom-iris aria-hidden="true">
+        <svg class="venom-eye" viewBox="0 0 40 18">
+          <path fill="#ffffff" d="M1 9C5 3 11 2 18 4.5L37 9 18 13.5C11 16 5 15 1 9Z"></path>
+        </svg>
+        <span class="venom-eye-scale" data-venom-pupil></span>
+      </span>
+    </span>
+    <svg class="venom-tongue" viewBox="0 0 36 70" aria-hidden="true">
+      <path fill="#9a1020" d="M7 2h22c1 8 0 20-2 34-1 8 2 16 6 20 2 2 1 6-3 7-4 1-7-2-8-6-1 4-4 6-8 6s-7-3-6-8c2-8 0-20-1-32C6 12 6 6 7 2z"></path>
+      <path fill="#e31c28" d="M10 4h16c1 8 0 18-1 30-1 7 1 13 4 17 1 2 0 4-3 5-3 0-5-2-6-5-1 3-3 5-6 5-3 0-5-2-4-6 1-8 0-18-1-30 0-6 0-12 1-16z"></path>
+      <path fill="#ffd0cb" d="M16 8c1 8 1 16 0 26 0 4 1 7 2 8-2-1-3-4-3-8 0-8 0-18 0-26z"></path>
+      <ellipse class="venom-drip" cx="18" cy="64" rx="3.2" ry="4.2" fill="#e31c28"></ellipse>
+    </svg>
+  </span>
+</Tag>
