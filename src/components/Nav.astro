@@ -5,7 +5,7 @@ import { site } from "../data/site";
 <header class="fixed inset-x-0 top-2 z-50 px-2 lg:flex lg:justify-center lg:px-3">
   <div class="lg:hidden">
     <nav
-      class="nav-glass flex h-16 items-center justify-between rounded-xl px-5"
+      class="nav-glass flex h-16 items-center justify-between rounded-2xl px-5"
       aria-label="Primary"
     >
       <a href="#home" class="font-display text-2xl leading-none tracking-wide" aria-label={`${site.name}, home`}>
@@ -25,7 +25,7 @@ import { site } from "../data/site";
         </span>
       </button>
     </nav>
-    <div id="mobile-nav" data-menu-panel hidden class="nav-glass mt-2 rounded-xl px-6 py-8">
+    <div id="mobile-nav" data-menu-panel hidden class="nav-glass mt-2 rounded-2xl px-6 py-8">
       <ul class="flex flex-col items-center gap-6">
         {
           site.nav.map((item) => (
@@ -33,7 +33,7 @@ import { site } from "../data/site";
               <a
                 href={item.href}
                 data-nav
-                class="nav-link link-underline text-base uppercase tracking-[2px] text-muted"
+                class="nav-link rounded-xl px-3 py-1.5 text-base uppercase tracking-[2px] text-muted"
               >
                 {item.label}
               </a>
@@ -45,7 +45,7 @@ import { site } from "../data/site";
   </div>
 
   <nav
-    class="nav-glass hidden h-14 items-center gap-3 rounded-xl p-1 lg:flex"
+    class="nav-glass hidden h-14 items-center gap-3 rounded-2xl p-1 lg:flex"
     aria-label="Primary"
   >
     <a
@@ -63,7 +63,7 @@ import { site } from "../data/site";
             <a
               href={item.href}
               data-nav
-              class="nav-link link-underline px-3 py-1 text-base uppercase tracking-[2px] text-muted"
+              class="nav-link rounded-lg px-3 py-1.5 text-sm uppercase tracking-[2px] text-muted"
             >
               {item.label}
             </a>

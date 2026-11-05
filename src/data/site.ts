@@ -21,6 +21,10 @@ export const site = {
   contactLead: "Tell me what you want built, from the interface through to production.",
   contactBody:
     "If a product needs to be carried all the way through, send a note. I will take it from the first screen to a build that ships.",
+  ribbon: [
+    ["Built end to end", "From the interface", "Through to production"],
+    ["The screens", "The services", "The data"],
+  ],
   nav: [
     { href: "#home", label: "Home" },
     { href: "#about", label: "About" },

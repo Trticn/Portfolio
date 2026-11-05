@@ -15,8 +15,8 @@ const socialIcons = {
 ---
 
 <section id="contact" class="band px-6 md:px-12">
-  <div class="mx-auto grid max-w-[1280px] items-stretch gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-    <div class="rounded-xl bg-[#14161c] px-8 py-16 md:px-16 md:py-24">
+  <div class="mx-auto grid max-w-[1280px] items-stretch gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-rows-[max-content_1fr]">
+    <div class="min-w-0 rounded-xl bg-[#14161c] px-8 py-16 md:px-16 md:py-24 lg:row-span-2">
       <p class="flex items-center gap-2 text-xs uppercase tracking-[3px] text-muted">
         <span class="size-2 rounded-full bg-accent" aria-hidden="true"></span>
         Get in touch
@@ -59,15 +59,14 @@ const socialIcons = {
       </form>
     </div>
 
-    <div class="grid content-start gap-4">
-      <div class="aspect-square overflow-hidden rounded-xl bg-[radial-gradient(ellipse_at_center,#16484a_0%,#101418_72%)]">
-        {
-          site.heroImage && (
-            <img src={site.heroImage} alt="" class="h-full w-full object-cover object-[center_32%]" />
-          )
-        }
-      </div>
-      <div class="rounded-xl bg-[#14161c] p-8 min-[23rem]:p-10">
+    <div class="aspect-square min-w-0 overflow-hidden rounded-xl bg-[radial-gradient(ellipse_at_center,#16484a_0%,#101418_72%)]">
+      {
+        site.heroImage && (
+          <img src={site.heroImage} alt="" class="h-full w-full object-cover object-[center_32%]" />
+        )
+      }
+    </div>
+    <div class="min-w-0 rounded-xl bg-[#14161c] p-8 min-[23rem]:p-10">
         <p class="text-lg leading-[1.6] text-pretty text-muted">{site.contactBody}</p>
         {
           site.socials.length > 0 && (
@@ -108,7 +107,6 @@ const socialIcons = {
           )
         }
       </div>
-    </div>
   </div>
 </section>
 

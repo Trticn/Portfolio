@@ -1,0 +1,38 @@
+---
+import { site } from "../data/site";
+
+const rows = site.ribbon;
+---
+
+<div class="ribbon -mt-4 pb-8 md:-mt-8 md:pb-12">
+  <p class="sr-only">{rows.flat().join(". ")}.</p>
+  {
+    rows.map((phrases, row) => (
+      <div class:list={["ribbon-row", row === 1 && "mt-2 md:mt-4"]} aria-hidden="true">
+        <div class:list={["ribbon-track flex w-max", row === 1 && "ribbon-track-back"]}>
+          {[0, 1].map((copy) => (
+            <div class:list={["flex items-center gap-6 pr-6 md:gap-8 md:pr-8", copy === 1 && "ribbon-clone"]}>
+              {phrases.map((phrase) =>
+                row === 1 ? (
+                  <>
+                    <span class="size-3 shrink-0 rounded-full bg-accent md:size-5" />
+                    <span class="font-display text-[clamp(3.25rem,10vw,8rem)] leading-none whitespace-nowrap uppercase">
+                      {phrase}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span class="font-display text-[clamp(3.25rem,10vw,8rem)] leading-none whitespace-nowrap uppercase">
+                      {phrase}
+                    </span>
+                    <span class="size-3 shrink-0 rounded-full bg-accent md:size-5" />
+                  </>
+                ),
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>

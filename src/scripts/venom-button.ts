@@ -38,9 +38,9 @@ const MDROP = 6;
 /** Thick strands (2 to MS); about as many fine hairs are added between them. */
 const STRANDS = 5;
 /** Distance from the edge, in px, at which the goo notices the mouse and starts reaching for it. */
-const SENSE = 230;
+const SENSE = 180;
 /** Distance from the edge, in px, at which the strands lunge and grab the pointer. */
-const REACH = 96;
+const REACH = 80;
 /** Distance from the edge, in px, at which they snap. Keep it above REACH. */
 const RELEASE = 130;
 /** Seconds the click ripple takes to run from the pointer round to the far side. */
@@ -343,10 +343,8 @@ if (buttons.length) {
     const ball = el.querySelector<HTMLElement>("[data-venom-ball]");
     const iris = el.querySelector<HTMLElement>("[data-venom-iris]");
     const pupil = el.querySelector<HTMLElement>("[data-venom-pupil]");
-    const tongue = el.querySelector<SVGElement>(".venom-tongue");
     const eye = el.querySelector<SVGElement>(".venom-eye");
     let eyeX = 0, eyeY = 0, eyeVX = 0, eyeVY = 0, dilate = 1, eyeBusy = false;
-    let tongueA = 0, tongueV = 0, tongueS = 0, tongueSV = 0, tongueBusy = false;
     let eyeSide = 0;
 
     // The goo takes the button's live background (it changes on hover).
@@ -445,13 +443,8 @@ if (buttons.length) {
       near = nearest(x, y);
       // the eye blinks: the white closes to a slit and opens again
       ball?.animate(
-        [
-          { transform: "scale(1, 1)" },
-          { transform: "scale(1.16, 0.05)", offset: 0.38 },
-          { transform: "scale(0.94, 1.08)", offset: 0.68 },
-          { transform: "scale(1, 1)" },
-        ],
-        { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+        [{ transform: "scaleY(1)", easing: "cubic-bezier(0.5, 0, 0.75, 0)" }, { transform: "scaleY(0.08)", offset: 0.4, easing: "cubic-bezier(0.25, 1, 0.5, 1)" }, { transform: "scaleY(1)" }],
+        { duration: 260 },
       );
       mode = "gulp";
       gulpT = 0;
@@ -608,14 +601,6 @@ if (buttons.length) {
           const reach = Math.min(Math.max(0, b.width / 2 - iris.offsetWidth / 2 - 2), dl * 0.5) * look;
           tx = (dx / dl) * reach; ty = (dy / dl) * reach;
         }
-        // the tongue stays tucked until the pointer is on the button, then it comes out toward that side
-        const hover = holding ? 1 : 0;
-        const aim = Math.max(-0.6, Math.min(0.6, dx / 120)) * hover;
-        tongueV += ((aim - tongueA) * 18 - tongueV * 8) * dt;
-        tongueA += tongueV * dt;
-        tongueSV += ((hover - tongueS) * 28 - tongueSV * 10) * dt;
-        tongueS += tongueSV * dt;
-        tongueBusy = tongueS > 0.02 || Math.abs(tongueSV) > 0.01 || Math.abs(tongueV) > 0.01;
         if (eye) {
           const watching = look > 0.35;
           const side = !watching ? 0 : dx < 0 ? -1 : 1;
@@ -626,7 +611,8 @@ if (buttons.length) {
               eye.style.transform = "";
             } else {
               eye.style.animation = "none";
-              eye.style.transform = side < 0 ? "rotate(14deg) scaleX(-1) scale(1.04)" : "rotate(-14deg) scale(1.04)";
+              // Mirrored art: the thick end faces the pointer, the point trails the other way.
+              eye.style.transform = side < 0 ? "rotate(-14deg) scale(1.04)" : "scaleX(-1) rotate(-14deg) scale(1.04)";
             }
           }
         }
@@ -760,20 +746,13 @@ if (buttons.length) {
         c.restore();
       }
 
-      return mode !== "idle" || eyeBusy || tongueBusy || spikes.length > 0 || drops.length > 0 || Math.abs(mound) > 0.05 || Math.abs(moundV) > 0.05;
+      return mode !== "idle" || eyeBusy || spikes.length > 0 || drops.length > 0 || Math.abs(mound) > 0.05 || Math.abs(moundV) > 0.05;
     };
 
     const commit = () => {
-      if (iris) iris.style.transform = eyeBusy ? `translate(${eyeX.toFixed(2)}px, ${eyeY.toFixed(2)}px)` : "";
-      if (pupil) pupil.style.transform = eyeBusy ? `scale(${dilate.toFixed(3)})` : "";
-      if (!tongue) return;
-      if (tongueBusy) {
-        tongue.style.opacity = Math.min(1, tongueS * 1.4).toFixed(3);
-        tongue.style.transform = `translateX(-50%) rotate(${((tongueA * 180) / Math.PI).toFixed(2)}deg) scaleY(${(0.15 + tongueS * 0.85).toFixed(3)})`;
-      } else {
-        tongue.style.opacity = "";
-        tongue.style.transform = "";
-      }
+      if (!iris || !pupil) return;
+      iris.style.transform = eyeBusy ? `translate(${eyeX.toFixed(2)}px, ${eyeY.toFixed(2)}px)` : "";
+      pupil.style.transform = eyeBusy ? `scale(${dilate.toFixed(3)})` : "";
     };
 
     return { draw, commit, gulp };

@@ -12,7 +12,7 @@ export const testimonials = [
   {
     id: "mihael",
     name: "Mihael Tomic",
-    role: "",
+    role: "Video Editor",
     quote:
       "The collaboration was very straightforward, without unnecessary complications. Everything was done quickly and as agreed. We would definitely work together again.",
     rating: "5.0",
@@ -22,7 +22,7 @@ export const testimonials = [
   {
     id: "sergej",
     name: "Sergej Surlan",
-    role: "",
+    role: "UI/UX Designer",
     quote:
       "Nikola took the work from the first screen through to a build that held together. Clear, careful, and easy to work with the whole way.",
     rating: "5.0",

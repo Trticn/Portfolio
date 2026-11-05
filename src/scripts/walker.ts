@@ -65,7 +65,10 @@ if (root && !reduce) {
       gx = Math.cos(ang) * 3.4 * amount;
       gy = Math.sin(ang) * 2.5 * amount;
     }
-    if (gaze) gaze.style.transform = `translate(calc(-50% + ${gx.toFixed(2)}px), calc(-50% + ${gy.toFixed(2)}px))`;
+    if (gaze) {
+      const lookX = facingLeft ? -gx : gx;
+      gaze.style.transform = `translate(calc(-50% + ${lookX.toFixed(2)}px), calc(-50% + ${gy.toFixed(2)}px))`;
+    }
     frame = requestAnimationFrame(tick);
   };
 

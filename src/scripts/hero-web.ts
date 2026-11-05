@@ -33,7 +33,7 @@ if (!canvas || reduce || !canvas.getContext) {
     const rings: Ring[] = [];
     const trail: { x: number; y: number }[] = [];
     const spider = { silk: 0, u: 0.22, dir: 1, step: 0, pause: 0, hops: 0, heading: 0 };
-    const rappel = { u: 0, dir: 1, wait: 0.6, step: 0 };
+    const rappel = { u: 0, wait: 0.6, step: 0, pin: -1, done: false };
     const title = canvas.parentElement?.querySelector("h1") ?? null;
 
     const link = (i: number, j: number, sag: number, weight: number, speed: number) => {
@@ -104,9 +104,7 @@ if (!canvas || reduce || !canvas.getContext) {
       spider.silk = 0;
       spider.u = 0.22;
       spider.dir = 1;
-      rappel.u = 0;
-      rappel.dir = 1;
-      rappel.wait = 0.6;
+      rappel.pin = -1;
       trail.length = 0;
     };
 
@@ -426,39 +424,40 @@ if (!canvas || reduce || !canvas.getContext) {
           const aimX = narrow
             ? Math.max(28, photoLeft - 32)
             : Math.max(36, Math.min(nameLeft - 34, line.left + 48));
-          let pin = anchors[0];
-          for (let i = 1; i < ceiling; i++) {
-            if (Math.abs(anchors[i].x - aimX) < Math.abs(pin.x - aimX)) pin = anchors[i];
+          if (rappel.pin < 0 || rappel.pin >= ceiling) {
+            rappel.pin = 0;
+            for (let i = 1; i < ceiling; i++) {
+              if (Math.abs(anchors[i].x - aimX) < Math.abs(anchors[rappel.pin].x - aimX)) rappel.pin = i;
+            }
           }
+          const pin = anchors[rappel.pin];
           if (floor > pin.y + 48) {
             const maxDrop = floor - pin.y - 8;
-            if (rappel.wait > 0) rappel.wait -= dt;
-            else {
-              rappel.u += dt * (rappel.dir > 0 ? 0.16 : 0.11);
-              if (rappel.u >= 1) {
-                rappel.u = 1;
-                rappel.dir = -1;
-                rappel.wait = 0.9;
-              } else if (rappel.u <= 0) {
-                rappel.u = 0;
-                rappel.dir = 1;
-                rappel.wait = 0.55;
+            if (!rappel.done) {
+              if (rappel.wait > 0) rappel.wait -= dt;
+              else {
+                rappel.u = Math.min(1, rappel.u + dt * 0.16);
+                if (rappel.u >= 1) rappel.done = true;
               }
             }
-            rappel.step += dt * (rappel.wait > 0 ? 3 : 9);
-            const swing = Math.sin(t * 0.55) * (narrow ? 6 : 10) * rappel.u;
-            const fromX = narrow ? aimX : pin.x;
-            const tipX = narrow ? aimX + swing : aimX + (pin.x - aimX) * (1 - rappel.u) + swing;
+            const hanging = rappel.done;
+            rappel.step += dt * (hanging || rappel.wait > 0 ? 2.2 : 9);
+            const swing = Math.sin(t * (hanging ? 0.7 : 0.55)) * (narrow ? 6 : 10) * rappel.u;
+            const fromX = pin.x;
+            const tipX = aimX + (pin.x - aimX) * (1 - rappel.u) + swing;
             const tipY = pin.y + 10 + maxDrop * Math.max(rappel.u, 0.03);
             const pen = narrow && dropCtx ? dropCtx : ctx;
+            const scale = narrow ? 0.58 : 0.72;
+            const fall = Math.atan2(tipY - pin.y, tipX - fromX);
+            const silkX = tipX - Math.cos(fall) * 12.3 * scale;
+            const silkY = tipY - Math.sin(fall) * 12.3 * scale;
             pen.beginPath();
             pen.moveTo(fromX, pin.y);
-            pen.quadraticCurveTo((fromX + tipX) / 2, (pin.y + tipY) / 2, tipX, tipY);
+            pen.quadraticCurveTo((fromX + silkX) / 2, (pin.y + silkY) / 2, silkX, silkY);
             pen.strokeStyle = "rgba(232, 255, 252, 0.7)";
             pen.lineWidth = 0.85;
             pen.stroke();
-            const fall = Math.atan2(tipY - pin.y, tipX - fromX);
-            drawSpider(tipX, tipY, rappel.dir > 0 ? fall : fall + Math.PI, narrow ? 0.58 : 0.72, t + 3, rappel.wait > 0 ? 0.55 : 0.1, rappel.step, pen);
+            drawSpider(tipX, tipY, fall, scale, t + 3, hanging ? 0.85 : rappel.wait > 0 ? 0.55 : 0.1, rappel.step, pen);
           }
         }
       }
